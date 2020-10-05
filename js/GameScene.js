@@ -2,31 +2,33 @@ class GameScene extends Phaser.Scene {
     constructor() {
         super("Game");
     }
+
     preload() {
         this.load.image('bg', 'img/bg.png');
         this.load.image('card', 'img/cardnew.jpg');
 
-        this.load.image('card1', 'img/card1.png');
-        this.load.image('card2', 'img/card2.png');
-        this.load.image('card3', 'img/card3.png');
-        this.load.image('card4', 'img/card4.png');
-        this.load.image('card5', 'img/card5.png');
-        this.load.image('card5', 'img/card5.png');
-        this.load.image('card6', 'img/card6.png');
-        this.load.image('card7', 'img/card7.png');
-        this.load.image('card8', 'img/card8.png');
-        this.load.image('card9', 'img/card9.png');
-        this.load.image('card10', 'img/card10.png');
-        this.load.image('card11', 'img/card11.png');
-        this.load.image('card12', 'img/card12.png');
-        this.load.image('card13', 'img/card13.png');
-        this.load.image('card14', 'img/card14.png');
-        this.load.image('card15', 'img/card15.png');
-        this.load.image('card16', 'img/card16.png');
-        this.load.image('card17', 'img/card17.png');
-        this.load.image('card18', 'img/card18.png');
-        this.load.image('card19', 'img/card19.png');
-        this.load.image('card20', 'img/card20.png');
+        this.load.image('card1', 'img/card2.png');
+        this.load.image('card2', 'img/card3.png');
+        this.load.image('card3', 'img/card4.png');
+        this.load.image('card4', 'img/card5.png');
+        this.load.image('card5', 'img/card6.png');
+        this.load.image('card6', 'img/card7.png');
+        this.load.image('card7', 'img/card8.png');
+        this.load.image('card8', 'img/card9.png');
+        this.load.image('card9', 'img/card10.png');
+        this.load.image('card10', 'img/card11.png');
+        this.load.image('card11', 'img/card12.png');
+        this.load.image('card12', 'img/card13.png');
+        this.load.image('card13', 'img/card14.png');
+        this.load.image('card14', 'img/card15.png');
+        this.load.image('card15', 'img/card16.png');
+        this.load.image('card16', 'img/card17.png');
+        this.load.image('card17', 'img/card18.png');
+        this.load.image('card18', 'img/card19.png');
+        this.load.image('card19', 'img/card20.png');
+
+        this.load.image('card101', 'img/card101.png');
+        this.load.image('card102', 'img/card102.png');
 
         this.load.audio('card', 'sounds/card.mp3');
         this.load.audio('complete', 'sounds/complete.mp3');
@@ -36,23 +38,27 @@ class GameScene extends Phaser.Scene {
 
 
     }
-    createText(){
-        this.timeoutText = this.add.text (550, 3, `Dead line timer:`, {
+
+    createText() {
+        this.timeoutText = this.add.text(550, 3, `Dead line timer:`, {
             font: `22px textfont`,
-            fill: `#ffffff`});
+            fill: `#ffffff`
+        });
 
     }
-    onTimerTick(){
+
+    onTimerTick() {
         this.timeoutText.setText('Dead line timer:' + this.timeout);
-        if(this.timeout <= 0){
+        if (this.timeout <= 0) {
             this.sounds.timeout.play();
             alert('Попробуйте ускороиться!!!');
             this.start();
         } else {
-        --this.timeout;
+            --this.timeout;
         }
     }
-    createTimer(){
+
+    createTimer() {
         this.time.addEvent({
             delay: 1000,
             callback: this.onTimerTick,
@@ -60,17 +66,19 @@ class GameScene extends Phaser.Scene {
             loop: true
         });
     }
-    createSounds(){
+
+    createSounds() {
         this.sounds = {
-           card: this.sound.add('card'),
-           complete: this.sound.add('complete'),
-           success: this.sound.add('success'),
-           theme: this.sound.add('theme'),
-           timeout: this.sound.add('timeout'),
+            card: this.sound.add('card'),
+            complete: this.sound.add('complete'),
+            success: this.sound.add('success'),
+            theme: this.sound.add('theme'),
+            timeout: this.sound.add('timeout'),
 
         };
 
     }
+
     create() {
         this.timeout = config.timeout;
         this.createSounds();
@@ -80,16 +88,19 @@ class GameScene extends Phaser.Scene {
         this.createCards();
         this.start();
     }
+
     start() {
         this.timeout = config.timeout;
         this.sounds.theme.play({
             volume: 0.1
         });
-                this.openedCard = null;
+        this.openedCard = null;
         this.openedCardsCount = 0;
+        this.lifes = config.lifes;
         this.initCards();
         this.showCards();
     }
+
     initCards() {
         let positions = this.getCardsPositions();
 
@@ -97,6 +108,7 @@ class GameScene extends Phaser.Scene {
             card.init(positions.pop());
         });
     }
+
     showCards() {
         this.cards.forEach(card => {
             card.move({
@@ -107,20 +119,27 @@ class GameScene extends Phaser.Scene {
         });
 
     }
+
     createBackground() {
         this.add.sprite(0, 0, 'bg').setOrigin(0, 0);
     }
+
     createCards() {
         this.cards = [];
 
-        for (let value = 1; value <= config.cards; value ++) {
+        for (let value = 1; value <= config.cards; value++) {
             for (let i = 0; i < 2; i++) {
                 this.cards.push(new Card(this, value));
             }
         }
 
+        for (let value = 1; value <= config.bad_cards; value++) {
+            this.cards.push(new Card(this, 100 + value));
+        }
+
         this.input.on("gameobjectdown", this.onCardClicked, this);
     }
+
     onCardClicked(pointer, card) {
         if (card.opened) {
             return false;
@@ -128,30 +147,44 @@ class GameScene extends Phaser.Scene {
 
         this.sounds.card.play();
 
-        if (this.openedCard) {
-            // уже есть открытая карта
-            if (this.openedCard.value === card.value) {
-                // картинки равны - запомнить
-                this.sounds.success.play();
-                this.openedCard = null;
-                ++this.openedCardsCount;
+        card.open(() => {
+            if (card.value <= 100) {
+                if (this.openedCard) {
+                    // уже есть открытая карта
+                    if (this.openedCard.value === card.value) {
+                        // картинки равны - запомнить
+                        this.sounds.success.play();
+                        this.openedCard = null;
+                        ++this.openedCardsCount;
+                    } else {
+                        // картинки разные - скрыть прошлую
+                        this.openedCard.close();
+                        this.openedCard = card;
+                    }
+                } else {
+                    // еще нет открытой карта
+                    this.openedCard = card;
+                }
+                if (this.openedCardsCount === (config.cards * 2) / 2) {
+                    this.sounds.complete.play();
+                    this.start();
+                }
             } else {
-                // картинки разные - скрыть прошлую
-                this.openedCard.close();
+                if (this.lifes-- === 0) {
+                    this.sounds.timeout.play();
+                    alert("Вы проиграли");
+                    this.start();
+                } else {
+                    alert(`Плохая карта, у вас осталось ${this.lifes} попыток`);
+                }
+                if (this.openedCard) {
+                    this.openedCard.close();
+                }
                 this.openedCard = card;
             }
-        } else {
-            // еще нет открытой карта
-            this.openedCard = card;
-        }
-
-        card.open();
-
-        if (this.openedCardsCount === this.cards.length / 2) {
-            this.sounds.complete.play();
-            this.start();
-        }
+        });
     }
+
     getCardsPositions() {
         let positions = [];
         let cardTexture = this.textures.get('card').getSourceImage();

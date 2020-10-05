@@ -5,7 +5,9 @@ let config = {
     height: 780,
     rows: 4,
     cols: 10,
-    cards: 20,
+    cards: 19,
+    bad_cards: 2, // Колличество плохих карт
+    lifes: 2, // Колличество жизней
     timeout: 205,
     scene: new GameScene()
     };
