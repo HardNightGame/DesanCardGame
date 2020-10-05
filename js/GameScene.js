@@ -34,13 +34,13 @@ class GameScene extends Phaser.Scene {
         this.load.audio('theme', 'sounds/theme.mp3');
         this.load.audio('timeout', 'sounds/timeout.mp3');
 
-    
+
     }
     createText(){
         this.timeoutText = this.add.text (550, 3, `Dead line timer:`, {
             font: `22px textfont`,
             fill: `#ffffff`});
-        
+
     }
     onTimerTick(){
         this.timeoutText.setText('Dead line timer:' + this.timeout);
@@ -69,7 +69,7 @@ class GameScene extends Phaser.Scene {
            timeout: this.sound.add('timeout'),
 
         };
-           
+
     }
     create() {
         this.timeout = config.timeout;
@@ -84,7 +84,7 @@ class GameScene extends Phaser.Scene {
         this.timeout = config.timeout;
         this.sounds.theme.play({
             volume: 0.1
-        });        
+        });
                 this.openedCard = null;
         this.openedCardsCount = 0;
         this.initCards();
@@ -113,11 +113,11 @@ class GameScene extends Phaser.Scene {
     createCards() {
         this.cards = [];
 
-        for (let value of config.cards) {
+        for (let value = 1; value <= config.cards; value ++) {
             for (let i = 0; i < 2; i++) {
                 this.cards.push(new Card(this, value));
             }
-        }   
+        }
 
         this.input.on("gameobjectdown", this.onCardClicked, this);
     }
