@@ -52,9 +52,10 @@ class GameScene extends Phaser.Scene {
         if (this.timeout <= 0) {
             this.sounds.timeout.play();
             alert('Попробуйте ускороиться!!!');
-            this.start();
+            this.endGame();
         } else {
             --this.timeout;
+            this.statistic.time++;
         }
     }
 
@@ -99,6 +100,7 @@ class GameScene extends Phaser.Scene {
         this.lifes = config.lifes;
         this.initCards();
         this.showCards();
+        this.statistic = new Statistic();
     }
 
     initCards() {
@@ -145,6 +147,7 @@ class GameScene extends Phaser.Scene {
             return false;
         }
 
+        this.statistic.IncrementClick();
         this.sounds.card.play();
 
         card.open(() => {
@@ -167,13 +170,15 @@ class GameScene extends Phaser.Scene {
                 }
                 if (this.openedCardsCount === (config.cards * 2) / 2) {
                     this.sounds.complete.play();
-                    this.start();
+                    this.statistic.gameWin = true;
+                    this.endGame();
                 }
             } else {
+                this.statistic.IncrementErrors();
                 if (this.lifes-- === 0) {
                     this.sounds.timeout.play();
                     alert("Вы проиграли");
-                    this.start();
+                    this.endGame();
                 } else {
                     alert(`Плохая карта, у вас осталось ${this.lifes} попыток`);
                 }
@@ -206,6 +211,11 @@ class GameScene extends Phaser.Scene {
         }
 
         return Phaser.Utils.Array.Shuffle(positions);
+    }
+
+    endGame() {
+        PublishStatistic(this.statistic);
+        this.start();
     }
 }
 
