@@ -41,7 +41,7 @@ class GameScene extends Phaser.Scene {
 
     createText() {
         this.timeoutText = this.add.text(550, 3, `Dead line timer:`, {
-            font: `22px textfont`,
+            font: `22px Arial`,
             fill: `#ffffff`
         });
 
