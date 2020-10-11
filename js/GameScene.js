@@ -51,9 +51,11 @@ class GameScene extends Phaser.Scene {
     }
 
     onTimerTick() {
+        if (this.lock) return;
         this.timeoutText.setText('Dead line timer:' + this.timeout);
         if (this.timeout <= 0) {
             this.sounds.timeout.play();
+            this.lock = true;
             Swal.fire({
                 title: 'Вам не хватило времени. Попробуйте ускориться.',
                 showClass: {
@@ -61,9 +63,13 @@ class GameScene extends Phaser.Scene {
                 },
                 hideClass: {
                     popup: 'animate__animated animate__fadeOutUp'
+                },
+                allowOutsideClick: false,
+                willClose: () => {
+                    this.lock = false;
+                    this.endGame();
                 }
             });
-            this.endGame();
         } else {
             --this.timeout;
             this.statistic.time++;
@@ -94,6 +100,7 @@ class GameScene extends Phaser.Scene {
     create() {
         this.timeout = config.timeout;
         this.life = new LifeService(config);
+        this.lock = false;
         this.createSounds();
         this.createTimer();
         this.createBackground();
@@ -157,7 +164,7 @@ class GameScene extends Phaser.Scene {
     }
 
     onCardClicked(pointer, card) {
-        if (card.opened) {
+        if (card.opened || this.lock) {
             return false;
         }
 
@@ -193,19 +200,28 @@ class GameScene extends Phaser.Scene {
                 this.scoreText.Update();
                 if (!this.life.IsAlive()) {
                     this.sounds.timeout.play();
+                    this.lock = true;
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
                         text: 'Вы проиграли',
-                        footer: '<a href>Не повезло в картах, повезет в любви =)</a>',
+                        footer: '<a href="#">Не повезло в картах, повезет в любви =)</a>',
+                        allowOutsideClick: false,
                         willClose: () => {
-                            console.log("window closed");
+                            this.lock = false;
                             this.endGame();
                         }
                     })
 
                 } else {
-                    Swal.fire(`Появилась новая опасность, у вас осталось попыток: ${this.life.currentLife}`);
+                    this.lock = true;
+                    Swal.fire({
+                        text: `Появилась новая опасность, у вас осталось попыток: ${this.life.currentLife}`,
+                        allowOutsideClick: false,
+                        willClose: () => {
+                            this.lock = false;
+                        }
+                    });
                 }
                 if (this.openedCard) {
                     this.openedCard.close();
