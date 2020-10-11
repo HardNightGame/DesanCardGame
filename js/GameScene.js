@@ -44,18 +44,10 @@ class GameScene extends Phaser.Scene {
             font: `22px Arial`,
             fill: `#ffffff`
         });
-
-        
-
     }
-    createScoreText() {
-        let score = 4;
-        let scoreText;
 
-        this.scoreText = this.add.text(450, 2, 'Score:',{
-             font: '22px Arial',
-             fill: '#ffffff'
-        });
+    createScoreText() {
+        this.scoreText = new LifeBar(this, this.life);
     }
 
     onTimerTick() {
@@ -101,6 +93,7 @@ class GameScene extends Phaser.Scene {
 
     create() {
         this.timeout = config.timeout;
+        this.life = new LifeService(config);
         this.createSounds();
         this.createTimer();
         this.createBackground();
@@ -111,17 +104,17 @@ class GameScene extends Phaser.Scene {
     }
 
     start() {
-        this.score = config.score;
         this.timeout = config.timeout;
         this.sounds.theme.play({
             volume: 0.1
         });
         this.openedCard = null;
         this.openedCardsCount = 0;
-        this.lifes = config.lifes;
         this.initCards();
         this.showCards();
         this.statistic = new Statistic();
+        this.life.Reset()
+        this.scoreText.Update();
     }
 
     initCards() {
@@ -196,18 +189,20 @@ class GameScene extends Phaser.Scene {
                 }
             } else {
                 this.statistic.IncrementErrors();
-                if (this.lifes-- === 0) {
+                this.life.Reduce();
+                this.scoreText.Update();
+                if (!this.life.IsAlive()) {
                     this.sounds.timeout.play();
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
                         text: 'Вы проиграли',
-                        footer: '<a href>Не повезло в картах, повезет в любви =)</a>'
+                        footer: '<a href>Не повезло в картах, повезет в любви =)</a>',
                       })
                     this.endGame();
-                } else { 
-            
-                Swal.fire(`Появилась новая опасность, у вас осталось попыток: ${this.lifes}`);
+                } else {
+
+                Swal.fire(`Появилась новая опасность, у вас осталось попыток: ${this.life.currentLife}`);
                 }
                 if (this.openedCard) {
                     this.openedCard.close();
