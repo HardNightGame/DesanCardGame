@@ -67,7 +67,7 @@ class GameScene extends Phaser.Scene {
                 allowOutsideClick: false,
                 willClose: () => {
                     this.lock = false;
-                    this.endGame();
+                    this.endGame(true);
                 }
             });
         } else {
@@ -209,7 +209,7 @@ class GameScene extends Phaser.Scene {
                         allowOutsideClick: false,
                         willClose: () => {
                             this.lock = false;
-                            this.endGame();
+                            this.endGame(true);
                         }
                     })
 
@@ -254,8 +254,8 @@ class GameScene extends Phaser.Scene {
         return Phaser.Utils.Array.Shuffle(positions);
     }
 
-    endGame() {
-        PublishStatistic(this.statistic);
+    endGame(noPublish) {
+        if (!noPublish) PublishStatistic(this.statistic);
         this.start();
     }
 }
