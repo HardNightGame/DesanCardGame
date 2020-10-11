@@ -25,8 +25,8 @@
 
 </head>
 <body>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>
 
 <nav class="navbar navbar-expand-md navbar-dark bg-dark">
     <a class="navbar-brand" href="#">DESAN All Stars</a>
@@ -41,15 +41,20 @@
                 <a class="nav-link" href="#" data-toggle="modal" data-target="#myModal">Правила игры</a>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="#" data-toggle="modal" data-target="#myModal2">Рейтинг игроков <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="#" data-toggle="modal" data-target="#myModal2">Рейтинг игроков <span
+                        class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="#" data-toggle="modal" data-target="#myModal3">Полезная информация<span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="#" data-toggle="modal" data-target="#myModal3">Полезная информация<span
+                        class="sr-only">(current)</span></a>
             </li>
         </ul>
 
     </div>
 </nav>
+<div style="height: calc(100% - 40px)" class="bg-dark ">
+    <div id="game" class="mx-auto w-auto"></div>
+</div>
 <script src="js/life/LifeService.js"></script>
 <script src="js/life/LifeBar.js"></script>
 <script src="js/StatisticPublisher.js"></script>
@@ -67,8 +72,11 @@
                 <button class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                &ensp; - Раздаётся 40 карт.<br>  &ensp; - 38 карт - парные, 2 карты - опасности.<br>  &ensp; - Цель игрока как можно быстрее открыть все парные карты, <br> &ensp;  &ensp; и не
-                наткнуться (более четырех раз) на карты "опасности".<br> &ensp; - У вас есть 200 секунд, чтобы разложить все карты. <br>  &ensp; - Результаты по окончанию игры записываются в "Рейтинг <br> &ensp;  &ensp; игроков".
+                &ensp; - Раздаётся 40 карт.<br> &ensp; - 38 карт - парные, 2 карты - опасности.<br> &ensp; - Цель игрока
+                как можно быстрее открыть все парные карты, <br> &ensp; &ensp; и не
+                наткнуться (более четырех раз) на карты "опасности".<br> &ensp; - У вас есть 200 секунд, чтобы разложить
+                все карты. <br> &ensp; - Результаты по окончанию игры записываются в "Рейтинг <br> &ensp; &ensp;
+                игроков".
             </div>
         </div>
     </div>
