@@ -57,12 +57,12 @@ class GameScene extends Phaser.Scene {
             Swal.fire({
                 title: 'Вам не хватило времени. Попробуйте ускориться.',
                 showClass: {
-                  popup: 'animate__animated animate__fadeInDown'
+                    popup: 'animate__animated animate__fadeInDown'
                 },
                 hideClass: {
-                  popup: 'animate__animated animate__fadeOutUp'
+                    popup: 'animate__animated animate__fadeOutUp'
                 }
-              });
+            });
             this.endGame();
         } else {
             --this.timeout;
@@ -198,11 +198,14 @@ class GameScene extends Phaser.Scene {
                         title: 'Oops...',
                         text: 'Вы проиграли',
                         footer: '<a href>Не повезло в картах, повезет в любви =)</a>',
-                      })
-                    this.endGame();
-                } else {
+                        willClose: () => {
+                            console.log("window closed");
+                            this.endGame();
+                        }
+                    })
 
-                Swal.fire(`Появилась новая опасность, у вас осталось попыток: ${this.life.currentLife}`);
+                } else {
+                    Swal.fire(`Появилась новая опасность, у вас осталось попыток: ${this.life.currentLife}`);
                 }
                 if (this.openedCard) {
                     this.openedCard.close();
