@@ -44,34 +44,32 @@ class GameScene extends Phaser.Scene {
             font: `22px Arial`,
             fill: `#ffffff`
         });
-
-        
-
     }
-    createScoreText() {
-        let score = 4;
-        let scoreText;
 
-        this.scoreText = this.add.text(450, 2, 'Score:',{
-             font: '22px Arial',
-             fill: '#ffffff'
-        });
+    createScoreText() {
+        this.scoreText = new LifeBar(this, this.life);
     }
 
     onTimerTick() {
+        if (this.lock) return;
         this.timeoutText.setText('Dead line timer:' + this.timeout);
         if (this.timeout <= 0) {
             this.sounds.timeout.play();
+            this.lock = true;
             Swal.fire({
                 title: 'Вам не хватило времени. Попробуйте ускориться.',
                 showClass: {
-                  popup: 'animate__animated animate__fadeInDown'
+                    popup: 'animate__animated animate__fadeInDown'
                 },
                 hideClass: {
-                  popup: 'animate__animated animate__fadeOutUp'
+                    popup: 'animate__animated animate__fadeOutUp'
+                },
+                allowOutsideClick: false,
+                willClose: () => {
+                    this.lock = false;
+                    this.endGame(true);
                 }
-              });
-            this.endGame();
+            });
         } else {
             --this.timeout;
             this.statistic.time++;
@@ -101,6 +99,8 @@ class GameScene extends Phaser.Scene {
 
     create() {
         this.timeout = config.timeout;
+        this.life = new LifeService(config);
+        this.lock = false;
         this.createSounds();
         this.createTimer();
         this.createBackground();
@@ -111,17 +111,17 @@ class GameScene extends Phaser.Scene {
     }
 
     start() {
-        this.score = config.score;
         this.timeout = config.timeout;
         this.sounds.theme.play({
             volume: 0.1
         });
         this.openedCard = null;
         this.openedCardsCount = 0;
-        this.lifes = config.lifes;
         this.initCards();
         this.showCards();
         this.statistic = new Statistic();
+        this.life.Reset()
+        this.scoreText.Update();
     }
 
     initCards() {
@@ -164,7 +164,7 @@ class GameScene extends Phaser.Scene {
     }
 
     onCardClicked(pointer, card) {
-        if (card.opened) {
+        if (card.opened || this.lock) {
             return false;
         }
 
@@ -196,18 +196,32 @@ class GameScene extends Phaser.Scene {
                 }
             } else {
                 this.statistic.IncrementErrors();
-                if (this.lifes-- === 0) {
+                this.life.Reduce();
+                this.scoreText.Update();
+                if (!this.life.IsAlive()) {
                     this.sounds.timeout.play();
+                    this.lock = true;
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
                         text: 'Вы проиграли',
-                        footer: '<a href>Не повезло в картах, повезет в любви =)</a>'
-                      })
-                    this.endGame();
-                } else { 
-            
-                Swal.fire(`Появилась новая опасность, у вас осталось попыток: ${this.lifes}`);
+                        footer: '<a href="#">Не повезло в картах, повезет в любви =)</a>',
+                        allowOutsideClick: false,
+                        willClose: () => {
+                            this.lock = false;
+                            this.endGame(true);
+                        }
+                    })
+
+                } else {
+                    this.lock = true;
+                    Swal.fire({
+                        text: `Появилась новая опасность, у вас осталось попыток: ${this.life.currentLife}`,
+                        allowOutsideClick: false,
+                        willClose: () => {
+                            this.lock = false;
+                        }
+                    });
                 }
                 if (this.openedCard) {
                     this.openedCard.close();
@@ -240,8 +254,8 @@ class GameScene extends Phaser.Scene {
         return Phaser.Utils.Array.Shuffle(positions);
     }
 
-    endGame() {
-        PublishStatistic(this.statistic);
+    endGame(noPublish) {
+        if (!noPublish) PublishStatistic(this.statistic);
         this.start();
     }
 }
