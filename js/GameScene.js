@@ -40,18 +40,37 @@ class GameScene extends Phaser.Scene {
     }
 
     createText() {
-        this.timeoutText = this.add.text(550, 3, `Dead line timer:`, {
+        this.timeoutText = this.add.text(550, 2, `Dead line timer:`, {
             font: `22px Arial`,
             fill: `#ffffff`
         });
 
+        
+
+    }
+    createScoreText() {
+        let score = 4;
+        let scoreText;
+
+        this.scoreText = this.add.text(450, 2, 'Score:',{
+             font: '22px Arial',
+             fill: '#ffffff'
+        });
     }
 
     onTimerTick() {
         this.timeoutText.setText('Dead line timer:' + this.timeout);
         if (this.timeout <= 0) {
             this.sounds.timeout.play();
-            alert('Попробуйте ускороиться!!!');
+            Swal.fire({
+                title: 'Вам не хватило времени. Попробуйте ускориться.',
+                showClass: {
+                  popup: 'animate__animated animate__fadeInDown'
+                },
+                hideClass: {
+                  popup: 'animate__animated animate__fadeOutUp'
+                }
+              });
             this.endGame();
         } else {
             --this.timeout;
@@ -86,11 +105,13 @@ class GameScene extends Phaser.Scene {
         this.createTimer();
         this.createBackground();
         this.createText();
+        this.createScoreText();
         this.createCards();
         this.start();
     }
 
     start() {
+        this.score = config.score;
         this.timeout = config.timeout;
         this.sounds.theme.play({
             volume: 0.1
@@ -177,10 +198,16 @@ class GameScene extends Phaser.Scene {
                 this.statistic.IncrementErrors();
                 if (this.lifes-- === 0) {
                     this.sounds.timeout.play();
-                    alert("Вы проиграли");
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Вы проиграли',
+                        footer: '<a href>Не повезло в картах, повезет в любви =)</a>'
+                      })
                     this.endGame();
-                } else {
-                    alert(`Плохая карта, у вас осталось ${this.lifes} попыток`);
+                } else { 
+            
+                Swal.fire(`Появилась новая опасность, у вас осталось попыток: ${this.lifes}`);
                 }
                 if (this.openedCard) {
                     this.openedCard.close();
