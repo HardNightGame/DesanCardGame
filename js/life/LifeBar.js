@@ -1,6 +1,7 @@
 class LifeBar {
     constructor(scene, lifeService) {
-        this.scoreText = scene.add.text(400, 2, 'Score: *', {
+        this.BarText ="Осталось попыток: ";
+        this.scoreText = scene.add.text(440, 2, `${this.BarText} *`, {
             font: '22px Arial',
             fill: '#ffffff'
         });
@@ -8,6 +9,6 @@ class LifeBar {
     }
 
     Update() {
-        this.scoreText.setText(`Score: ${this.lifeService.currentLife}`);
+        this.scoreText.setText(`${this.BarText} ${this.lifeService.currentLife}`);
     }
 }
