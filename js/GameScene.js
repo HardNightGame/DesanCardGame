@@ -100,7 +100,7 @@ class GameScene extends Phaser.Scene {
     create() {
         this.timeout = config.timeout;
         this.life = new LifeService(config);
-        this.lock = false;
+
         this.createSounds();
         this.createTimer();
         this.createBackground();
@@ -111,6 +111,7 @@ class GameScene extends Phaser.Scene {
     }
 
     start() {
+        this.lock = false;
         this.timeout = config.timeout;
         this.sounds.theme.play({
             volume: 0.1
@@ -168,6 +169,8 @@ class GameScene extends Phaser.Scene {
             return false;
         }
 
+        if (card.value > 100) this.lock = true;
+
         this.statistic.IncrementClick();
         this.sounds.card.play();
 
@@ -200,7 +203,6 @@ class GameScene extends Phaser.Scene {
                 this.scoreText.Update();
                 if (!this.life.IsAlive()) {
                     this.sounds.timeout.play();
-                    this.lock = true;
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
@@ -208,13 +210,12 @@ class GameScene extends Phaser.Scene {
                         footer: '<a href="#">Не повезло в картах, повезет в любви =)</a>',
                         allowOutsideClick: false,
                         willClose: () => {
-                            this.lock = false;
                             this.endGame(true);
+                            this.lock = false;
                         }
                     })
 
                 } else {
-                    this.lock = true;
                     Swal.fire({
                         text: `Появилась новая опасность, у вас осталось попыток: ${this.life.currentLife}`,
                         allowOutsideClick: false,
