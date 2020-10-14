@@ -1,7 +1,7 @@
 class LifeBar {
     constructor(scene, lifeService) {
         this.BarText ="Осталось попыток: ";
-        this.scoreText = scene.add.text(440, 2, `${this.BarText} *`, {
+        this.scoreText = scene.add.text(420, 2, `${this.BarText} *`, {
             font: '22px Arial',
             fill: '#ffffff'
         });
