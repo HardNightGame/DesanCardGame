@@ -40,19 +40,36 @@ class GameScene extends Phaser.Scene {
     }
 
     createText() {
-        this.timeoutText = this.add.text(550, 3, `Dead line timer:`, {
+        this.timeoutText = this.add.text(550, 2, `Dead line timer:`, {
             font: `22px Arial`,
             fill: `#ffffff`
         });
+    }
 
+    createScoreText() {
+        this.scoreText = new LifeBar(this, this.life);
     }
 
     onTimerTick() {
+        if (this.lock) return;
         this.timeoutText.setText('Dead line timer:' + this.timeout);
         if (this.timeout <= 0) {
             this.sounds.timeout.play();
-            alert('Попробуйте ускороиться!!!');
-            this.endGame();
+            this.lock = true;
+            Swal.fire({
+                title: 'Вам не хватило времени. Попробуйте ускориться.',
+                showClass: {
+                    popup: 'animate__animated animate__fadeInDown'
+                },
+                hideClass: {
+                    popup: 'animate__animated animate__fadeOutUp'
+                },
+                allowOutsideClick: false,
+                willClose: () => {
+                    this.lock = false;
+                    this.endGame(true);
+                }
+            });
         } else {
             --this.timeout;
             this.statistic.time++;
@@ -82,25 +99,30 @@ class GameScene extends Phaser.Scene {
 
     create() {
         this.timeout = config.timeout;
+        this.life = new LifeService(config);
+
         this.createSounds();
         this.createTimer();
         this.createBackground();
         this.createText();
+        this.createScoreText();
         this.createCards();
         this.start();
     }
 
     start() {
+        this.lock = false;
         this.timeout = config.timeout;
         this.sounds.theme.play({
             volume: 0.1
         });
         this.openedCard = null;
         this.openedCardsCount = 0;
-        this.lifes = config.lifes;
         this.initCards();
         this.showCards();
         this.statistic = new Statistic();
+        this.life.Reset()
+        this.scoreText.Update();
     }
 
     initCards() {
@@ -143,9 +165,11 @@ class GameScene extends Phaser.Scene {
     }
 
     onCardClicked(pointer, card) {
-        if (card.opened) {
+        if (card.opened || this.lock) {
             return false;
         }
+
+        if (card.value > 100) this.lock = true;
 
         this.statistic.IncrementClick();
         this.sounds.card.play();
@@ -175,12 +199,30 @@ class GameScene extends Phaser.Scene {
                 }
             } else {
                 this.statistic.IncrementErrors();
-                if (this.lifes-- === 0) {
+                this.life.Reduce();
+                this.scoreText.Update();
+                if (!this.life.IsAlive()) {
                     this.sounds.timeout.play();
-                    alert("Вы проиграли");
-                    this.endGame();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Вы проиграли',
+                        footer: '<a href="#">Не повезло в картах, повезет в любви =)</a>',
+                        allowOutsideClick: false,
+                        willClose: () => {
+                            this.endGame(true);
+                            this.lock = false;
+                        }
+                    })
+
                 } else {
-                    alert(`Плохая карта, у вас осталось ${this.lifes} попыток`);
+                    Swal.fire({
+                        text: `Появилась новая опасность, у вас осталось попыток: ${this.life.currentLife}`,
+                        allowOutsideClick: false,
+                        willClose: () => {
+                            this.lock = false;
+                        }
+                    });
                 }
                 if (this.openedCard) {
                     this.openedCard.close();
@@ -213,8 +255,8 @@ class GameScene extends Phaser.Scene {
         return Phaser.Utils.Array.Shuffle(positions);
     }
 
-    endGame() {
-        PublishStatistic(this.statistic);
+    endGame(noPublish) {
+        if (!noPublish) PublishStatistic(this.statistic);
         this.start();
     }
 }
