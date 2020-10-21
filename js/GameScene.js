@@ -175,12 +175,16 @@ class GameScene extends Phaser.Scene {
 
         for (let value = 1; value <= config.cards; value++) {
             for (let i = 0; i < 2; i++) {
-                this.cards.push(new Card(this, value));
+                this.cards.push(
+                    new SkuCard(this, value,
+                        new CardTexture("card" + value, "card")));
             }
         }
 
         for (let value = 1; value <= config.bad_cards; value++) {
-            this.cards.push(new Card(this, 100 + value));
+            this.cards.push(
+                new BadCard(this, value,
+                    new CardTexture("card" + 100 + value, "card")));
         }
 
         this.input.on("gameobjectdown", this.onCardClicked, this);
@@ -191,68 +195,11 @@ class GameScene extends Phaser.Scene {
             return false;
         }
 
-        if (card.value > 100) this.lock = true;
-
         this.statistic.IncrementClick();
         this.sounds.card.play();
 
         card.open(() => {
-            if (card.value <= 100) {
-                if (this.openedCard) {
-                    // уже есть открытая карта
-                    if (this.openedCard.value === card.value) {
-                        // картинки равны - запомнить
-                        this.sounds.success.play();
-                        this.openedCard = null;
-                        ++this.openedCardsCount;
-                    //    this.restart();
-                    } else {
-                        // картинки разные - скрыть прошлую
-                        this.openedCard.close();
-                        this.openedCard = card;
-                    }
-                } else {
-                    // еще нет открытой карта
-                    this.openedCard = card;
-                }
-                if (this.openedCardsCount === (config.cards * 2) / 2) {
-                    this.sounds.complete.play();
-                    this.timer.paused = true;
-                    this.statistic.gameWin = true;
-                    this.endGame();
-                }
-            } else {
-                this.statistic.IncrementErrors();
-                this.life.Reduce();
-                this.scoreText.Update();
-                if (!this.life.IsAlive()) {
-                    this.sounds.timeout.play();
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Вы проиграли',
-                        footer: '<a href="#">Не повезло в картах, повезет в любви =)</a>',
-                        allowOutsideClick: false,
-                        willClose: () => {
-                            this.endGame(true);
-                            this.lock = false;
-                        }
-                    })
-
-                } else {
-                    Swal.fire({
-                        text: `Появилась новая опасность, у вас осталось попыток: ${this.life.currentLife}`,
-                        allowOutsideClick: false,
-                        willClose: () => {
-                            this.lock = false;
-                        }
-                    });
-                }
-                if (this.openedCard) {
-                    this.openedCard.close();
-                }
-                this.openedCard = card;
-            }
+            card.onClick();
         });
     }
 
