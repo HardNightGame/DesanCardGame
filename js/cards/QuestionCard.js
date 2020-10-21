@@ -13,11 +13,37 @@ class QuestionCard extends Card {
         super.onClick();
         this.scene.lock = true;
 
-        Swal.fire({
-            text: `Карта викторина: ${this.scene.life.currentLife}`,
-            allowOutsideClick: false,
-            willClose: () => {
-                this.scene.lock = false;
+        Swal.mixin({
+            input: 'text',
+            confirmButtonText: 'Next &rarr;',
+            showCancelButton: true,
+            allowOutsideClick: false
+        }).queue([
+            {
+                title: 'Карточка с вопросом',
+                text: 'Сколько лет компании Десан?'
+            },
+
+        ]).then((result) => {
+            this.scene.lock = true;
+            if (result.value == 24) {
+                Swal.fire({
+                    title: 'Вы ответили правильно',
+                    confirmButtonText: 'Продолжить!',
+                    allowOutsideClick: false,
+                    willClose: () => {
+                        this.scene.lock = false;
+                    }
+                });
+            } else {
+                Swal.fire({
+                    title: 'Вы ответили НЕ правильно',
+                    confirmButtonText: 'Продолжить!',
+                    allowOutsideClick: false,
+                    willClose: () => {
+                        this.scene.lock = false;
+                    }
+                });
             }
         });
     }

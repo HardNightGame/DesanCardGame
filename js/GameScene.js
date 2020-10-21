@@ -186,7 +186,7 @@ class GameScene extends Phaser.Scene {
         for (let value = 1; value <= config.bad_cards; value++) {
             this.cards.push(
                 new BadCard(this, value,
-                    new CardTexture("card" + 100 + value, "card")));
+                    new CardTexture("card" + (100 + value), "card")));
         }
 
         for (let value = 1; value <= config.question_cards; value++) {
