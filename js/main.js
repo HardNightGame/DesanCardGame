@@ -12,7 +12,7 @@ let config = {
     cards: 19,
     bad_cards: 2, // Колличество плохих карт
     lifes: 3, // Колличество жизней
-    timeout:20,
+    timeout:1200,
     scene: new GameScene()
 };
 let game = new Phaser.Game(config);

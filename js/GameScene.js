@@ -54,7 +54,7 @@ class GameScene extends Phaser.Scene {
         if (this.lock) return;
         this.timeoutText.setText('Dead line timer:' + this.timeout);
         if (this.timeout <= 0) {
-            
+
             this.sounds.timeout.play();
             this.lock = true;
             Swal.fire({
@@ -72,7 +72,6 @@ class GameScene extends Phaser.Scene {
                     this.endGame(true);
                 }
             });
-            this.restart();
         } else {
             --this.timeout;
             this.statistic.time++;
@@ -221,7 +220,6 @@ class GameScene extends Phaser.Scene {
                     this.timer.paused = true;
                     this.statistic.gameWin = true;
                     this.endGame();
-                    this.restart();
                 }
             } else {
                 this.statistic.IncrementErrors();
@@ -238,7 +236,6 @@ class GameScene extends Phaser.Scene {
                         willClose: () => {
                             this.endGame(true);
                             this.lock = false;
-                            
                         }
                     })
 
@@ -284,6 +281,6 @@ class GameScene extends Phaser.Scene {
 
     endGame(noPublish) {
         if (!noPublish) PublishStatistic(this.statistic);
-        this.start();
+        this.restart();
     }
 }
