@@ -207,62 +207,7 @@ class GameScene extends Phaser.Scene {
         this.sounds.card.play();
 
         card.open(() => {
-            if (card.value <= 100) {
-                if (this.openedCard) {
-                    // уже есть открытая карта
-                    if (this.openedCard.value === card.value) {
-                        // картинки равны - запомнить
-                        this.sounds.success.play();
-                        this.openedCard = null;
-                        ++this.openedCardsCount;
-                    //    this.restart();
-                    } else {
-                        // картинки разные - скрыть прошлую
-                        this.openedCard.close();
-                        this.openedCard = card;
-                    }
-                } else {
-                    // еще нет открытой карта
-                    this.openedCard = card;
-                }
-                if (this.openedCardsCount === (config.cards * 2) / 2) {
-                    this.sounds.complete.play();
-                    this.timer.paused = true;
-                    this.statistic.gameWin = true;
-                    this.endGame();
-                }
-            } else {
-                this.statistic.IncrementErrors();
-                this.life.Reduce();
-                this.scoreText.Update();
-                if (!this.life.IsAlive()) {
-                    this.sounds.timeout.play();
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Вы проиграли',
-                        footer: '<a href="#">Не повезло в картах, повезет в любви =)</a>',
-                        allowOutsideClick: false,
-                        willClose: () => {
-                            this.endGame(true);
-                            this.lock = false;
-                        }
-                    })
-
-                } else {
-                    Swal.fire({
-                        text: `Появилась новая опасность, у вас осталось попыток: ${this.life.currentLife}`,
-                        allowOutsideClick: false,
-                        willClose: () => {
-                            this.lock = false;
-                        }
-                    });
-                }
-                if (this.openedCard) {
-                    this.openedCard.close();
-                }
-                this.openedCard = card;
-            }
+            card.onClick();
         });
     }
 
