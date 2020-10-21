@@ -54,6 +54,7 @@ class GameScene extends Phaser.Scene {
         if (this.lock) return;
         this.timeoutText.setText('Dead line timer:' + this.timeout);
         if (this.timeout <= 0) {
+
             this.sounds.timeout.play();
             this.lock = true;
             Swal.fire({
@@ -67,6 +68,7 @@ class GameScene extends Phaser.Scene {
                 allowOutsideClick: false,
                 willClose: () => {
                     this.lock = false;
+                    this.timer.paused = true;
                     this.endGame(true);
                 }
             });
@@ -77,7 +79,7 @@ class GameScene extends Phaser.Scene {
     }
 
     createTimer() {
-        this.time.addEvent({
+        this.timer = this.time.addEvent({
             delay: 1000,
             callback: this.onTimerTick,
             callbackScope: this,
@@ -110,6 +112,25 @@ class GameScene extends Phaser.Scene {
         this.start();
     }
 
+    restart() {
+        let count = 0;
+        let onCardMoveComplete = () => {
+            ++count;
+            if (count >= this.cards.length) {
+                this.start();
+            }
+        };
+        this.cards.forEach(card => {
+            // card.depth = 1/card.position.delay/100;
+            card.move({
+                x: this.sys.game.config.width + card.width,
+                y: this.sys.game.config.height + card.height,
+                delay: card.position.delay,
+                callback: onCardMoveComplete
+            });
+        });
+    }
+
     start() {
         this.lock = false;
         this.timeout = config.timeout;
@@ -118,6 +139,7 @@ class GameScene extends Phaser.Scene {
         });
         this.openedCard = null;
         this.openedCardsCount = 0;
+        this.timer.paused = false;
         this.initCards();
         this.showCards();
         this.statistic = new Statistic();
@@ -183,6 +205,7 @@ class GameScene extends Phaser.Scene {
                         this.sounds.success.play();
                         this.openedCard = null;
                         ++this.openedCardsCount;
+                    //    this.restart();
                     } else {
                         // картинки разные - скрыть прошлую
                         this.openedCard.close();
@@ -194,6 +217,7 @@ class GameScene extends Phaser.Scene {
                 }
                 if (this.openedCardsCount === (config.cards * 2) / 2) {
                     this.sounds.complete.play();
+                    this.timer.paused = true;
                     this.statistic.gameWin = true;
                     this.endGame();
                 }
@@ -257,7 +281,6 @@ class GameScene extends Phaser.Scene {
 
     endGame(noPublish) {
         if (!noPublish) PublishStatistic(this.statistic);
-        this.start();
+        this.restart();
     }
 }
-
