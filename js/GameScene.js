@@ -30,6 +30,8 @@ class GameScene extends Phaser.Scene {
         this.load.image('card101', 'img/card101.png');
         this.load.image('card102', 'img/card102.png');
 
+        this.load.image('card201', 'img/card201.png');
+
         this.load.audio('card', 'sounds/card.mp3');
         this.load.audio('complete', 'sounds/complete.mp3');
         this.load.audio('success', 'sounds/success.mp3');
@@ -184,7 +186,13 @@ class GameScene extends Phaser.Scene {
         for (let value = 1; value <= config.bad_cards; value++) {
             this.cards.push(
                 new BadCard(this, value,
-                    new CardTexture("card" + 100 + value, "card")));
+                    new CardTexture("card" + (100 + value), "card")));
+        }
+
+        for (let value = 1; value <= config.question_cards; value++) {
+            this.cards.push(
+                new QuestionCard(this, value,
+                    new CardTexture("card" + 201, "card")));
         }
 
         this.input.on("gameobjectdown", this.onCardClicked, this);

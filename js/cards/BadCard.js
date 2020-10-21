@@ -9,14 +9,18 @@ class BadCard extends Card{
         super(scene, value, cardTexture);
     }
 
+    open(callback) {
+        this.scene.lock = true;
+        super.open(callback);
+    }
+
     onClick(){
         super.onClick();
-        this.scene.lock = true;
 
         this.scene.statistic.IncrementErrors();
         this.scene.life.Reduce();
         this.scene.scoreText.Update();
-        if (!this.life.IsAlive()) {
+        if (!this.scene.life.IsAlive()) {
             this.scene.sounds.timeout.play();
             Swal.fire({
                 icon: 'error',
