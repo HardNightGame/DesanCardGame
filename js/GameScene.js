@@ -30,6 +30,8 @@ class GameScene extends Phaser.Scene {
         this.load.image('card101', 'img/card101.png');
         this.load.image('card102', 'img/card102.png');
 
+        this.load.image('card201', 'img/card201.png');
+
         this.load.audio('card', 'sounds/card.mp3');
         this.load.audio('complete', 'sounds/complete.mp3');
         this.load.audio('success', 'sounds/success.mp3');
@@ -183,6 +185,10 @@ class GameScene extends Phaser.Scene {
             this.cards.push(new Card(this, 100 + value));
         }
 
+        for (let value = 1; value <= config.question_cards; value++) {
+            this.cards.push(new Card(this, 201));
+        }
+
         this.input.on("gameobjectdown", this.onCardClicked, this);
     }
 
@@ -221,7 +227,7 @@ class GameScene extends Phaser.Scene {
                     this.statistic.gameWin = true;
                     this.endGame();
                 }
-            } else {
+            } else if(card.value > 100 & card.value < 200) {
                 this.statistic.IncrementErrors();
                 this.life.Reduce();
                 this.scoreText.Update();
@@ -252,9 +258,18 @@ class GameScene extends Phaser.Scene {
                     this.openedCard.close();
                 }
                 this.openedCard = card;
+
+                } else if (card.value > 200) {
+                    Swal.fire({
+                        text: `Карта викторина: ${this.life.currentLife}`,
+                        allowOutsideClick: false,
+                        willClose: () => {
+                        this.lock = false;
+                    }
+                }); 
             }
-        });
-    }
+    });
+} 
 
     getCardsPositions() {
         let positions = [];
