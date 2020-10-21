@@ -1,6 +1,13 @@
 class Card extends Phaser.GameObjects.Sprite {
-    constructor(scene, value) {
+    /**
+     *
+     * @param scene
+     * @param value
+     * @param cardTexture {CardTexture}
+     */
+    constructor(scene, value, cardTexture) {
         super(scene, 0, 0, 'card');
+        this.cardTexture = cardTexture;
         this.scene = scene;
         this.value = value;
         this.scene.add.existing(this);
@@ -60,13 +67,17 @@ class Card extends Phaser.GameObjects.Sprite {
 
     open(callback) {
         this.opened = true;
-        this.flip('card' + this.value, callback);
+        this.flip(this.cardTexture.cardBack, callback);
     }
 
     close(callback) {
         if (this.opened) {
             this.opened = false;
-            this.flip('card', callback);
+            this.flip(this.cardTexture.cardFace, callback);
         }
+    }
+
+    onClick(){
+
     }
 }

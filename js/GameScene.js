@@ -177,16 +177,22 @@ class GameScene extends Phaser.Scene {
 
         for (let value = 1; value <= config.cards; value++) {
             for (let i = 0; i < 2; i++) {
-                this.cards.push(new Card(this, value));
+                this.cards.push(
+                    new SkuCard(this, value,
+                        new CardTexture("card" + value, "card")));
             }
         }
 
         for (let value = 1; value <= config.bad_cards; value++) {
-            this.cards.push(new Card(this, 100 + value));
+            this.cards.push(
+                new BadCard(this, value,
+                    new CardTexture("card" + 100 + value, "card")));
         }
 
         for (let value = 1; value <= config.question_cards; value++) {
-            this.cards.push(new Card(this, 201));
+            this.cards.push(
+                new QuestionCard(this, value,
+                    new CardTexture("card" + 201, "card")));
         }
 
         this.input.on("gameobjectdown", this.onCardClicked, this);
@@ -196,8 +202,6 @@ class GameScene extends Phaser.Scene {
         if (card.opened || this.lock) {
             return false;
         }
-
-        if (card.value > 100) this.lock = true;
 
         this.statistic.IncrementClick();
         this.sounds.card.play();
@@ -227,7 +231,7 @@ class GameScene extends Phaser.Scene {
                     this.statistic.gameWin = true;
                     this.endGame();
                 }
-            } else if(card.value > 100 & card.value < 200) {
+            } else {
                 this.statistic.IncrementErrors();
                 this.life.Reduce();
                 this.scoreText.Update();
@@ -258,18 +262,9 @@ class GameScene extends Phaser.Scene {
                     this.openedCard.close();
                 }
                 this.openedCard = card;
-
-                } else if (card.value > 200) {
-                    Swal.fire({
-                        text: `Карта викторина: ${this.life.currentLife}`,
-                        allowOutsideClick: false,
-                        willClose: () => {
-                        this.lock = false;
-                    }
-                }); 
             }
-    });
-} 
+        });
+    }
 
     getCardsPositions() {
         let positions = [];
