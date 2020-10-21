@@ -9,9 +9,13 @@ class BadCard extends Card{
         super(scene, value, cardTexture);
     }
 
+    open(callback) {
+        this.scene.lock = true;
+        super.open(callback);
+    }
+
     onClick(){
         super.onClick();
-        this.scene.lock = true;
 
         this.scene.statistic.IncrementErrors();
         this.scene.life.Reduce();

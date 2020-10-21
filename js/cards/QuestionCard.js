@@ -9,14 +9,17 @@ class QuestionCard extends Card {
         super(scene, value, cardTexture);
     }
 
+    open(callback) {
+        this.scene.lock = true;
+        super.open(callback);
+    }
+
     onClick() {
         super.onClick();
-        this.scene.lock = true;
 
         Swal.mixin({
             input: 'text',
-            confirmButtonText: 'Next &rarr;',
-            showCancelButton: true,
+            confirmButtonText: 'Принять',
             allowOutsideClick: false
         }).queue([
             {
