@@ -6,7 +6,7 @@ class Card extends Phaser.GameObjects.Sprite {
      * @param cardTexture {CardTexture}
      */
     constructor(scene, value, cardTexture) {
-        super(scene, 0, 0, 'card');
+        super(scene, 0, 0, cardTexture.cardFace);
         this.cardTexture = cardTexture;
         this.scene = scene;
         this.value = value;
