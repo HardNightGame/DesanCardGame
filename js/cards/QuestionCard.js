@@ -51,6 +51,6 @@ class QuestionCard extends Card {
         if (this.scene.openedCard) {
             this.scene.openedCard.close();
         }
-        this.scene.openedCard = this;
+        this.scene.openedCard = null;
     }
 }
