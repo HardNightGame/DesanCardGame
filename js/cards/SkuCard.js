@@ -6,7 +6,8 @@ class SkuCard extends Card {
      * @param cardTexture {CardTexture}
      */
     constructor(scene, value, cardTexture) {
-        super(scene, value, cardTexture);
+        super(scene, cardTexture);
+        this.value = value;
     }
 
     onClick() {

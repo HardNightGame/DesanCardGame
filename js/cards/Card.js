@@ -2,14 +2,12 @@ class Card extends Phaser.GameObjects.Sprite {
     /**
      *
      * @param scene
-     * @param value
      * @param cardTexture {CardTexture}
      */
-    constructor(scene, value, cardTexture) {
+    constructor(scene, cardTexture) {
         super(scene, 0, 0, cardTexture.cardFace);
         this.cardTexture = cardTexture;
         this.scene = scene;
-        this.value = value;
         this.scene.add.existing(this);
         this.setInteractive();
         this.opened = false;

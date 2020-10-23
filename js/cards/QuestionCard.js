@@ -2,11 +2,10 @@ class QuestionCard extends Card {
     /**
      *
      * @param scene
-     * @param value
      * @param cardTexture {CardTexture}
      */
-    constructor(scene, value, cardTexture) {
-        super(scene, value, cardTexture);
+    constructor(scene, cardTexture) {
+        super(scene, cardTexture);
     }
 
     open(callback) {
