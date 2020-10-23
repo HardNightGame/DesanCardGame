@@ -44,12 +44,21 @@
 </div>
 <!--    </div>-->
 <!--</div>-->
+<script src="js/phaser.min.js"></script>
+
+<script src="js/questions/exactQuestion.js"></script>
+<script src="js/questions/questionFactory.js"></script>
+<script src="js/cards/CardTexture.js"></script>
+<script src="js/cards/Card.js"></script>
+<script src="js/cards/SkuCard.js"></script>
+<script src="js/cards/BadCard.js"></script>
+<script src="js/cards/QuestionCard.js"></script>
+<script src="js/cards/CardFactory.js"></script>
+
 <script src="js/life/LifeService.js"></script>
 <script src="js/life/LifeBar.js"></script>
 <script src="js/StatisticPublisher.js"></script>
 <script src="js/Statistic.js"></script>
-<script src="js/phaser.min.js"></script>
-<script src="js/Card.js"></script>
 <script src="js/GameScene.js"></script>
 <script src="js/main.js"></script>
 
@@ -63,8 +72,8 @@
             <div class="modal-body">
                 <ul>
                     <li>Раздаётся 40 карт.</li>
-                    <li>38 карт - парные, 2 карты - опасности.</li>
-                    <li>Цель игрока как можно быстрее открыть все парные карты, и не наткнуться (более четырех раз) на
+                    <li>38 карт - парные. 2 карты - опасности. 2 карты викторины</li>
+                    <li>Цель игрока как можно быстрее открыть все парные карты, и не наткнуться (более трёх раз) на
                         карты "опасности".
                     </li>
                     <li>У вас есть 200 секунд, чтобы разложить все карты.</li>

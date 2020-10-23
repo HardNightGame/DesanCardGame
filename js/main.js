@@ -9,8 +9,9 @@ let config = {
     parent: 'game',
     rows: 4,
     cols: 10,
-    cards: 19,
-    bad_cards: 2, // Колличество плохих карт
+    cards: 18,
+    bad_cards: 2,
+    question_cards:2, // Колличество плохих карт
     lifes: 3, // Колличество жизней
     timeout: 200,
     scene: new GameScene()

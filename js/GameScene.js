@@ -1,42 +1,21 @@
 class GameScene extends Phaser.Scene {
     constructor() {
         super("Game");
+        this.cardFactory = new CardFactory(this);
     }
 
     preload() {
         this.load.image('bg', 'img/bg.png');
-        this.load.image('card', 'img/cardnew.jpg');
 
-        this.load.image('card1', 'img/card2.png');
-        this.load.image('card2', 'img/card3.png');
-        this.load.image('card3', 'img/card4.png');
-        this.load.image('card4', 'img/card5.png');
-        this.load.image('card5', 'img/card6.png');
-        this.load.image('card6', 'img/card7.png');
-        this.load.image('card7', 'img/card8.png');
-        this.load.image('card8', 'img/card9.png');
-        this.load.image('card9', 'img/card10.png');
-        this.load.image('card10', 'img/card11.png');
-        this.load.image('card11', 'img/card12.png');
-        this.load.image('card12', 'img/card13.png');
-        this.load.image('card13', 'img/card14.png');
-        this.load.image('card14', 'img/card15.png');
-        this.load.image('card15', 'img/card16.png');
-        this.load.image('card16', 'img/card17.png');
-        this.load.image('card17', 'img/card18.png');
-        this.load.image('card18', 'img/card19.png');
-        this.load.image('card19', 'img/card20.png');
-
-        this.load.image('card101', 'img/card101.png');
-        this.load.image('card102', 'img/card102.png');
+        this.cardFactory.GetAllImageSource().forEach(e => {
+            this.load.image(e.image, e.src);
+        })
 
         this.load.audio('card', 'sounds/card.mp3');
         this.load.audio('complete', 'sounds/complete.mp3');
         this.load.audio('success', 'sounds/success.mp3');
         this.load.audio('theme', 'sounds/theme.mp3');
         this.load.audio('timeout', 'sounds/timeout.mp3');
-
-
     }
 
     createText() {
@@ -54,6 +33,7 @@ class GameScene extends Phaser.Scene {
         if (this.lock) return;
         this.timeoutText.setText('Dead line timer:' + this.timeout);
         if (this.timeout <= 0) {
+
             this.sounds.timeout.play();
             this.lock = true;
             Swal.fire({
@@ -67,6 +47,7 @@ class GameScene extends Phaser.Scene {
                 allowOutsideClick: false,
                 willClose: () => {
                     this.lock = false;
+                    this.timer.paused = true;
                     this.endGame(true);
                 }
             });
@@ -77,7 +58,7 @@ class GameScene extends Phaser.Scene {
     }
 
     createTimer() {
-        this.time.addEvent({
+        this.timer = this.time.addEvent({
             delay: 1000,
             callback: this.onTimerTick,
             callbackScope: this,
@@ -110,6 +91,25 @@ class GameScene extends Phaser.Scene {
         this.start();
     }
 
+    restart() {
+        let count = 0;
+        let onCardMoveComplete = () => {
+            ++count;
+            if (count >= this.cards.length) {
+                this.start();
+            }
+        };
+        this.cards.forEach(card => {
+            // card.depth = 1/card.position.delay/100;
+            card.move({
+                x: this.sys.game.config.width + card.width,
+                y: this.sys.game.config.height + card.height,
+                delay: card.position.delay,
+                callback: onCardMoveComplete
+            });
+        });
+    }
+
     start() {
         this.lock = false;
         this.timeout = config.timeout;
@@ -118,6 +118,7 @@ class GameScene extends Phaser.Scene {
         });
         this.openedCard = null;
         this.openedCardsCount = 0;
+        this.timer.paused = false;
         this.initCards();
         this.showCards();
         this.statistic = new Statistic();
@@ -152,13 +153,17 @@ class GameScene extends Phaser.Scene {
         this.cards = [];
 
         for (let value = 1; value <= config.cards; value++) {
-            for (let i = 0; i < 2; i++) {
-                this.cards.push(new Card(this, value));
-            }
+            this.cardFactory.CreateSkuCardPair(value).forEach(e => {
+                this.cards.push(e);
+            });
         }
 
         for (let value = 1; value <= config.bad_cards; value++) {
-            this.cards.push(new Card(this, 100 + value));
+            this.cards.push(this.cardFactory.CreateBadCard());
+        }
+            let questionText = new questionFactory();
+        for (let value = 1; value <= config.question_cards; value++) {
+            this.cards.push(this.cardFactory.CreateQuestionCard(questionText.getQuestion()));
         }
 
         this.input.on("gameobjectdown", this.onCardClicked, this);
@@ -169,66 +174,11 @@ class GameScene extends Phaser.Scene {
             return false;
         }
 
-        if (card.value > 100) this.lock = true;
-
         this.statistic.IncrementClick();
         this.sounds.card.play();
 
         card.open(() => {
-            if (card.value <= 100) {
-                if (this.openedCard) {
-                    // уже есть открытая карта
-                    if (this.openedCard.value === card.value) {
-                        // картинки равны - запомнить
-                        this.sounds.success.play();
-                        this.openedCard = null;
-                        ++this.openedCardsCount;
-                    } else {
-                        // картинки разные - скрыть прошлую
-                        this.openedCard.close();
-                        this.openedCard = card;
-                    }
-                } else {
-                    // еще нет открытой карта
-                    this.openedCard = card;
-                }
-                if (this.openedCardsCount === (config.cards * 2) / 2) {
-                    this.sounds.complete.play();
-                    this.statistic.gameWin = true;
-                    this.endGame();
-                }
-            } else {
-                this.statistic.IncrementErrors();
-                this.life.Reduce();
-                this.scoreText.Update();
-                if (!this.life.IsAlive()) {
-                    this.sounds.timeout.play();
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Вы проиграли',
-                        footer: '<a href="#">Не повезло в картах, повезет в любви =)</a>',
-                        allowOutsideClick: false,
-                        willClose: () => {
-                            this.endGame(true);
-                            this.lock = false;
-                        }
-                    })
-
-                } else {
-                    Swal.fire({
-                        text: `Появилась новая опасность, у вас осталось попыток: ${this.life.currentLife}`,
-                        allowOutsideClick: false,
-                        willClose: () => {
-                            this.lock = false;
-                        }
-                    });
-                }
-                if (this.openedCard) {
-                    this.openedCard.close();
-                }
-                this.openedCard = card;
-            }
+            card.onClick();
         });
     }
 
@@ -257,7 +207,6 @@ class GameScene extends Phaser.Scene {
 
     endGame(noPublish) {
         if (!noPublish) PublishStatistic(this.statistic);
-        this.start();
+        this.restart();
     }
 }
-
