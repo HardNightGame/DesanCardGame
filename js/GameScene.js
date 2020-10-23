@@ -188,11 +188,11 @@ class GameScene extends Phaser.Scene {
                 new BadCard(this, value,
                     new CardTexture("card" + (100 + value), "card")));
         }
-
+            let questionText = new questionFactory();
         for (let value = 1; value <= config.question_cards; value++) {
             this.cards.push(
                 new QuestionCard(this, value,
-                    new CardTexture("card" + 201, "card")));
+                    new CardTexture("card" + 201, "card"), questionText.getQuestion()));
         }
 
         this.input.on("gameobjectdown", this.onCardClicked, this);

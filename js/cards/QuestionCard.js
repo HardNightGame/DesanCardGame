@@ -5,8 +5,9 @@ class QuestionCard extends Card {
      * @param value
      * @param cardTexture {CardTexture}
      */
-    constructor(scene, value, cardTexture) {
+    constructor(scene, value, cardTexture, question) {
         super(scene, value, cardTexture);
+        this.question = question;
     }
 
     open(callback) {
@@ -24,12 +25,11 @@ class QuestionCard extends Card {
         }).queue([
             {
                 title: 'Карточка с вопросом',
-                text: 'Сколько лет компании Десан?'
+                text: this.question.getQuestion()
             },
-
         ]).then((result) => {
             this.scene.lock = true;
-            if (result.value == 24) {
+            if (this.question.isAnswerCorrect(result.value)) {
                 Swal.fire({
                     title: 'Вы ответили правильно',
                     confirmButtonText: 'Продолжить!',
