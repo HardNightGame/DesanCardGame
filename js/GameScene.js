@@ -163,10 +163,7 @@ class GameScene extends Phaser.Scene {
         }
             let questionText = new questionFactory();
         for (let value = 1; value <= config.question_cards; value++) {
-            this.cards.push(this.cardFactory.CreateQuestionCard());
-            this.cards.push(
-                new QuestionCard(this, value,
-                    new CardTexture("card" + 201, "card"), questionText.getQuestion()));
+            this.cards.push(this.cardFactory.CreateQuestionCard(questionText.getQuestion()));
         }
 
         this.input.on("gameobjectdown", this.onCardClicked, this);
