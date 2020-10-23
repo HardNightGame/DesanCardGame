@@ -62,9 +62,9 @@ class CardFactory {
         return new BadCard(this.scene, new CardTexture(this.avaliavebleBadCards.pop(), this.cardFace.image));
     }
 
-    CreateQuestionCard() {
+    CreateQuestionCard(question) {
         return new QuestionCard(this.scene,
-            new CardTexture(this.questionCardImages.image, this.cardFace.image));
+            new CardTexture(this.questionCardImages.image, this.cardFace.image), question);
     }
 
 }

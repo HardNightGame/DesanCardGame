@@ -161,9 +161,9 @@ class GameScene extends Phaser.Scene {
         for (let value = 1; value <= config.bad_cards; value++) {
             this.cards.push(this.cardFactory.CreateBadCard());
         }
-
+            let questionText = new questionFactory();
         for (let value = 1; value <= config.question_cards; value++) {
-            this.cards.push(this.cardFactory.CreateQuestionCard());
+            this.cards.push(this.cardFactory.CreateQuestionCard(questionText.getQuestion()));
         }
 
         this.input.on("gameobjectdown", this.onCardClicked, this);
