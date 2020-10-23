@@ -2,18 +2,13 @@ class questionFactory {
     constructor() {
         this.questions = [
             new exactQuestion(24, 'Сколько лет компании Десан?'),
-            new exactQuestion('нет', 'Лечо "Помидорка" сделана по ГОСТу?')
+            new exactQuestion('нет', 'Лечо "Помидорка" сделана по ГОСТу?'),
+            new exactQuestion(3, 'Сколько брендов у компании Десан?'),
         ];
+        this.questions = Phaser.Utils.Array.Shuffle(this.questions);
     }
 
     getQuestion() {
-        let randomNumber = this.getRandomIntInclusive(0, 1);
-        return this.questions[randomNumber];
-    }
-
-    getRandomIntInclusive(min, max) {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min + 1)) + min; //Максимум и минимум включаются
+        return this.questions.pop();
     }
 }
