@@ -1,44 +1,21 @@
 class GameScene extends Phaser.Scene {
     constructor() {
         super("Game");
+        this.cardFactory = new CardFactory(this);
     }
 
     preload() {
         this.load.image('bg', 'img/bg.png');
-        this.load.image('card', 'img/cardnew.jpg');
 
-        this.load.image('card1', 'img/card2.png');
-        this.load.image('card2', 'img/card3.png');
-        this.load.image('card3', 'img/card4.png');
-        this.load.image('card4', 'img/card5.png');
-        this.load.image('card5', 'img/card6.png');
-        this.load.image('card6', 'img/card7.png');
-        this.load.image('card7', 'img/card8.png');
-        this.load.image('card8', 'img/card9.png');
-        this.load.image('card9', 'img/card10.png');
-        this.load.image('card10', 'img/card11.png');
-        this.load.image('card11', 'img/card12.png');
-        this.load.image('card12', 'img/card13.png');
-        this.load.image('card13', 'img/card14.png');
-        this.load.image('card14', 'img/card15.png');
-        this.load.image('card15', 'img/card16.png');
-        this.load.image('card16', 'img/card17.png');
-        this.load.image('card17', 'img/card18.png');
-        this.load.image('card18', 'img/card19.png');
-        this.load.image('card19', 'img/card20.png');
-
-        this.load.image('card101', 'img/card101.png');
-        this.load.image('card102', 'img/card102.png');
-
-        this.load.image('card201', 'img/card201.png');
+        this.cardFactory.GetAllImageSource().forEach(e => {
+            this.load.image(e.image, e.src);
+        })
 
         this.load.audio('card', 'sounds/card.mp3');
         this.load.audio('complete', 'sounds/complete.mp3');
         this.load.audio('success', 'sounds/success.mp3');
         this.load.audio('theme', 'sounds/theme.mp3');
         this.load.audio('timeout', 'sounds/timeout.mp3');
-
-
     }
 
     createText() {
@@ -176,20 +153,17 @@ class GameScene extends Phaser.Scene {
         this.cards = [];
 
         for (let value = 1; value <= config.cards; value++) {
-            for (let i = 0; i < 2; i++) {
-                this.cards.push(
-                    new SkuCard(this, value,
-                        new CardTexture("card" + value, "card")));
-            }
+            this.cardFactory.CreateSkuCardPair(value).forEach(e => {
+                this.cards.push(e);
+            });
         }
 
         for (let value = 1; value <= config.bad_cards; value++) {
-            this.cards.push(
-                new BadCard(this, value,
-                    new CardTexture("card" + (100 + value), "card")));
+            this.cards.push(this.cardFactory.CreateBadCard());
         }
             let questionText = new questionFactory();
         for (let value = 1; value <= config.question_cards; value++) {
+            this.cards.push(this.cardFactory.CreateQuestionCard());
             this.cards.push(
                 new QuestionCard(this, value,
                     new CardTexture("card" + 201, "card"), questionText.getQuestion()));

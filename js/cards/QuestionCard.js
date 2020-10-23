@@ -2,11 +2,10 @@ class QuestionCard extends Card {
     /**
      *
      * @param scene
-     * @param value
      * @param cardTexture {CardTexture}
      */
-    constructor(scene, value, cardTexture, question) {
-        super(scene, value, cardTexture);
+    constructor(scene, cardTexture, question) {
+        super(scene, cardTexture);
         this.question = question;
     }
 
@@ -52,5 +51,6 @@ class QuestionCard extends Card {
         if (this.scene.openedCard) {
             this.scene.openedCard.close();
         }
+        this.scene.openedCard = this;
     }
 }
