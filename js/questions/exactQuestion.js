@@ -7,11 +7,6 @@ class exactQuestion {
         return this.question;
     }
     isAnswerCorrect(userAnswer) {
-        if (typeof userAnswer == "string") {
-            let lowerCaseAnswer = userAnswer.toLowerCase();
-            return this.answer == lowerCaseAnswer;
-        } else {
-            return this.answer == userAnswer;
-        }
+        return userAnswer[0].toLowerCase();
     }
 }
