@@ -99,13 +99,16 @@ class GameScene extends Phaser.Scene {
                 this.start();
             }
         };
+        this.lock = true;
         this.cards.forEach(card => {
+
             // card.depth = 1/card.position.delay/100;
             card.move({
                 x: this.sys.game.config.width + card.width,
                 y: this.sys.game.config.height + card.height,
                 delay: card.position.delay,
                 callback: onCardMoveComplete
+
             });
         });
     }
@@ -161,7 +164,7 @@ class GameScene extends Phaser.Scene {
         for (let value = 1; value <= config.bad_cards; value++) {
             this.cards.push(this.cardFactory.CreateBadCard());
         }
-            let questionText = new questionFactory();
+        let questionText = new questionFactory();
         for (let value = 1; value <= config.question_cards; value++) {
             this.cards.push(this.cardFactory.CreateQuestionCard(questionText.getQuestion()));
         }
