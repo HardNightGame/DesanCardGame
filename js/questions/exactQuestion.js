@@ -7,6 +7,6 @@ class exactQuestion {
         return this.question;
     }
     isAnswerCorrect(userAnswer) {
-        return userAnswer[0].toLowerCase();
+        return userAnswer[0].toLowerCase() == this.answer;
     }
 }
