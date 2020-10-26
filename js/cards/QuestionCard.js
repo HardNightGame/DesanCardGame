@@ -20,7 +20,10 @@ class QuestionCard extends Card {
         Swal.mixin({
             input: 'text',
             confirmButtonText: 'Принять',
-            allowOutsideClick: false
+            allowOutsideClick: false,
+            inputAttributes: {
+                required: true
+            }
         }).queue([
             {
                 title: 'Карточка с вопросом',
