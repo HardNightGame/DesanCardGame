@@ -22,17 +22,20 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
+        <ul class="navbar-nav">           
             <li class="nav-item active">
-                <a class="nav-link" href="#" data-toggle="modal" data-target="#myModal">Правила игры</a>
+                <a class="nav-link" href="#" data-toggle="modal" data-target="#myModal2">Правила игры</a>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="#" data-toggle="modal" data-target="#myModal2">Рейтинг игроков <span
+                <a class="nav-link" href="#" data-toggle="modal" data-target="#myModal3">Рейтинг игроков <span
                         class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="#" data-toggle="modal" data-target="#myModal3">Полезная информация<span
+                <a class="nav-link" href="#" data-toggle="modal" data-target="#myModal4">Полезная информация<span
                         class="sr-only">(current)</span></a>
+            </li> 
+            <li class="nav-item active">
+                <a class="nav-link" href="#" data-toggle="modal" data-target="#myModal1">Авторизация</a>
             </li>
         </ul>
 
@@ -62,7 +65,19 @@
 <script src="js/GameScene.js"></script>
 <script src="js/main.js"></script>
 
-<div class="modal" id="myModal">
+<div class="modal" id="myModal1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Авторизация (в стадии разработки)</h5>
+                <button class="close" data-dismiss="modal">&times;</button>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="myModal2">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -71,20 +86,21 @@
             </div>
             <div class="modal-body">
                 <ul>
+                    <li>Для попадания в "Рейтинг игроков", Вам необходимо пройти авторизацию на сайте.</li>
                     <li>Раздаётся 40 карт.</li>
-                    <li>38 карт - парные. 2 карты - опасности. 2 карты викторины</li>
+                    <li>36 карт - парные. 2 карты - опасности. 2 карты викторины</li>
                     <li>Цель игрока как можно быстрее открыть все парные карты, и не наткнуться (более трёх раз) на
                         карты "опасности".
                     </li>
                     <li>У вас есть 200 секунд, чтобы разложить все карты.</li>
-                    <li>Результаты по окончанию игры записываются в "Рейтинг".</li>
+                    
                 </ul>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal" id="myModal2">
+<div class="modal" id="myModal3">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -98,7 +114,7 @@
     </div>
 </div>
 
-<div class="modal" id="myModal3">
+<div class="modal" id="myModal4">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
